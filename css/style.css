@@ -2,10 +2,13 @@
     margin: 0;
     padding: 0; 
 }
-#container{
-    display: flex;
-    flex-direction: column;
+#container {
+    display: block;
+    margin: 50px auto;
+    width: 50%;
+    height: 80vh; /* 80% višine vidnega polja */
 }
-canvas{
+canvas {
     border: 1px solid black;
+    display: block; /* Odpravi presledek pod canvasom */
 }
