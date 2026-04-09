@@ -17,10 +17,13 @@ function drawIt() {
     var NCOLS = 5;
     var BRICKWIDTH;
     var BRICKHEIGHT = 20;
+    var BRICK_OFFSET_TOP = 40;   // Prostor nad opekami (v pikslih)
+    var BRICK_OFFSET_SIDES = 80;  // Prostor ob strani (v pikslih)
     var PADDING = 1;
     var rowcolors = ["#FF1C0A", "#FFFD0A", "#00A308", "#0008DB", "#EB0093"];
-    var paddlecolor = "#000000";
-    var ballcolor = "#000000";
+    var paddlecolor = "#ffffff";
+    var PADDLE_OFFSET_BOTTOM = 20;
+    var ballcolor = "#ffffff";
     var sekunde;
     var sekundeI;
     var minuteI;
@@ -52,7 +55,7 @@ function drawIt() {
         canvas.attr('height', HEIGHT);
 
         // Ponovno izračunamo širino opek glede na novo širino zaslona
-        BRICKWIDTH = (WIDTH / NCOLS) - PADDING;
+        BRICKWIDTH = ((WIDTH - (2 * BRICK_OFFSET_SIDES)) / NCOLS) - PADDING;
 
         // Popravimo položaj ploščice, da ne ostane izven zaslona
         if (paddlex + paddlew > WIDTH) paddlex = WIDTH - paddlew;
@@ -96,9 +99,9 @@ function drawIt() {
     $(document).keyup(onKeyUp);
 
     function initbricks() { //inicializacija opek - polnjenje v tabelo
-        NROWS = 5;
-        NCOLS = 5;
-        BRICKWIDTH = (WIDTH / NCOLS) - 1;
+        NROWS = 10;
+        NCOLS = 10;
+        BRICKWIDTH = ((WIDTH - (2 * BRICK_OFFSET_SIDES)) / NCOLS) - PADDING;
         BRICKHEIGHT = 15;
         PADDING = 1;
         bricks = new Array(NROWS);
@@ -136,14 +139,14 @@ function drawIt() {
             else paddlex = 0;
         }
         ctx.fillStyle = paddlecolor;
-        rect(paddlex, HEIGHT - paddleh, paddlew, paddleh);
+        rect(paddlex, HEIGHT - paddleh - PADDLE_OFFSET_BOTTOM, paddlew, paddleh);
 
         // 2. Risanje opek in logika za trke (z vseh strani)
         for (var i = 0; i < NROWS; i++) {
             for (var j = 0; j < NCOLS; j++) {
                 if (bricks[i][j] == 1) {
-                    var brickX = (j * (BRICKWIDTH + PADDING)) + PADDING;
-                    var brickY = (i * (BRICKHEIGHT + PADDING)) + PADDING;
+                    var brickX = (j * (BRICKWIDTH + PADDING)) + BRICK_OFFSET_SIDES;
+                    var brickY = (i * (BRICKHEIGHT + PADDING)) + BRICK_OFFSET_TOP;
 
                     ctx.fillStyle = rowcolors[i];
                     rect(brickX, brickY, BRICKWIDTH, BRICKHEIGHT);
@@ -169,8 +172,18 @@ function drawIt() {
         if (x + dx > WIDTH - r || x + dx < r) dx = -dx;
         if (y + dy < r) dy = -dy;
 
+        var paddleTop = HEIGHT - paddleh - PADDLE_OFFSET_BOTTOM;
+        
         // 4. LOGIKA ZA TLA IN PLOŠČICO
-        if (y + dy > HEIGHT - r) {
+        if (dy > 0 && y + r >= paddleTop && y + r <= paddleTop + dy + 2) {
+            if (x > paddlex && x < paddlex + paddlew) {
+                var hitPos = (x - (paddlex + paddlew / 2)) / (paddlew / 2);
+                dx = 6 * hitPos; 
+                dy = -dy;
+                y = paddleTop - r; // "Odlepi" žogico od ploščice
+            }
+        }
+        /* if (y + dy > HEIGHT - r) {
             // Če zadane ploščico, se odbije
             if (x > paddlex && x < paddlex + paddlew) {
                 dx = 8 * ((x - (paddlex + paddlew / 2)) / paddlew);
@@ -181,23 +194,27 @@ function drawIt() {
                 dx = 0;
                 dy = 0;
 
-                // Zakomentirana stara koda za konec igre
+                 // Zakomentirana stara koda za konec igre
                 clearInterval(intervalId); // Ustavimo risanje
-
                 clearInterval(intTimer);   // Ustavimo uro
-
                 alert("Konec igre! Vaš čas: " + $("#cas").text());
-
-                location.reload(); // Osvežimo stran za novo igro
+                location.reload(); // Osvežimo stran za novo igro 
             }
+        } */
+
+        if (y + r + dy > HEIGHT) {
+            y = HEIGHT - r;
+            dx = 0;
+            dy = 0;
         }
 
         // 5. PONOVNI ODZIV: Če je žogica na tleh in jo zadeneš s ploščico, se spet odbije
         // To omogoča, da se žogica "aktivira", ko prineseš paddle do nje
         if (dy === 0 && y >= HEIGHT - r) {
             if (x > paddlex && x < paddlex + paddlew) {
-                dx = 2; // Ponovno nastavimo začetno hitrost
+                dx = 2; 
                 dy = -4;
+                y = paddleTop - r;
             }
         }
 
