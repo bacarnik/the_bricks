@@ -17,10 +17,13 @@ function drawIt() {
     var NCOLS = 5;
     var BRICKWIDTH;
     var BRICKHEIGHT = 20;
+    var BRICK_OFFSET_TOP = 40;   // Prostor nad opekami (v pikslih)
+    var BRICK_OFFSET_SIDES = 80;  // Prostor ob strani (v pikslih)
     var PADDING = 1;
     var rowcolors = ["#FF1C0A", "#FFFD0A", "#00A308", "#0008DB", "#EB0093"];
-    var paddlecolor = "#000000";
-    var ballcolor = "#000000";
+    var paddlecolor = "#ffffff";
+    var PADDLE_OFFSET_BOTTOM = 20;
+    var ballcolor = "#ffffff";
     var sekunde;
     var sekundeI;
     var minuteI;
@@ -52,7 +55,7 @@ function drawIt() {
         canvas.attr('height', HEIGHT);
 
         // Ponovno izračunamo širino opek glede na novo širino zaslona
-        BRICKWIDTH = (WIDTH / NCOLS) - PADDING;
+        BRICKWIDTH = ((WIDTH - (2 * BRICK_OFFSET_SIDES)) / NCOLS) - PADDING;
 
         // Popravimo položaj ploščice, da ne ostane izven zaslona
         if (paddlex + paddlew > WIDTH) paddlex = WIDTH - paddlew;
@@ -96,9 +99,9 @@ function drawIt() {
     $(document).keyup(onKeyUp);
 
     function initbricks() { //inicializacija opek - polnjenje v tabelo
-        NROWS = 5;
-        NCOLS = 5;
-        BRICKWIDTH = (WIDTH / NCOLS) - 1;
+        NROWS = 10;
+        NCOLS = 10;
+        BRICKWIDTH = ((WIDTH - (2 * BRICK_OFFSET_SIDES)) / NCOLS) - PADDING;
         BRICKHEIGHT = 15;
         PADDING = 1;
         bricks = new Array(NROWS);
@@ -121,74 +124,97 @@ function drawIt() {
         $("#cas").html(izpisTimer);
     }
     //END LIBRARY CODE
-    
+
     function draw() {
         clear();
         ctx.fillStyle = ballcolor;
-        circle(x, y, 10);
+        circle(x, y, r);
 
-
-        for (i = 0; i < NROWS; i++) {
-            ctx.fillStyle = rowcolors[i]; //barvanje vrstic
-            for (j = 0; j < NCOLS; j++) {
-                if (bricks[i][j] == 1) {
-                    rect((j * (BRICKWIDTH + PADDING)) + PADDING,
-                        (i * (BRICKHEIGHT + PADDING)) + PADDING,
-                        BRICKWIDTH, BRICKHEIGHT);
-                }
-            }
-        }
-        //premik ploščice levo in desno
+        // 1. Premik ploščice
         if (rightDown) {
-            if ((paddlex + paddlew) < WIDTH) {
-                paddlex += 5;
-            } else {
-                paddlex = WIDTH - paddlew;
-            }
-        }
-        else if (leftDown) {
-            if (paddlex > 0) {
-                paddlex -= 5;
-            } else {
-                paddlex = 0;
-            }
+            if ((paddlex + paddlew) < WIDTH) paddlex += 5;
+            else paddlex = WIDTH - paddlew;
+        } else if (leftDown) {
+            if (paddlex > 0) paddlex -= 5;
+            else paddlex = 0;
         }
         ctx.fillStyle = paddlecolor;
-        rect(paddlex, HEIGHT - paddleh, paddlew, paddleh);
+        rect(paddlex, HEIGHT - paddleh - PADDLE_OFFSET_BOTTOM, paddlew, paddleh);
 
-        //risanje opek
-        for (i = 0; i < NROWS; i++) {
-            for (j = 0; j < NCOLS; j++) {
+        // 2. Risanje opek in logika za trke (z vseh strani)
+        for (var i = 0; i < NROWS; i++) {
+            for (var j = 0; j < NCOLS; j++) {
                 if (bricks[i][j] == 1) {
+                    var brickX = (j * (BRICKWIDTH + PADDING)) + BRICK_OFFSET_SIDES;
+                    var brickY = (i * (BRICKHEIGHT + PADDING)) + BRICK_OFFSET_TOP;
+
                     ctx.fillStyle = rowcolors[i];
-                    rect((j * (BRICKWIDTH + PADDING)) + PADDING,
-                        (i * (BRICKHEIGHT + PADDING)) + PADDING,
-                        BRICKWIDTH, BRICKHEIGHT);
+                    rect(brickX, brickY, BRICKWIDTH, BRICKHEIGHT);
+
+                    // Detekcija trka
+                    if (x + r > brickX && x - r < brickX + BRICKWIDTH &&
+                        y + r > brickY && y - r < brickY + BRICKHEIGHT) {
+
+                        bricks[i][j] = 0;
+                        var prevY = y - dy;
+                        // Če je bila žogica prej nad ali pod opeko, obrni vertikalno smer
+                        if (prevY + r <= brickY || prevY - r >= brickY + BRICKHEIGHT) {
+                            dy = -dy;
+                        } else {
+                            dx = -dx;
+                        }
+                    }
                 }
             }
         }
 
-        rowheight = BRICKHEIGHT + PADDING /* + f */ / 2; //Smo zadeli opeko?
-        colwidth = BRICKWIDTH + PADDING /* + f */ / 2;
-        row = Math.floor(y / rowheight);
-        col = Math.floor(x / colwidth);
+        // 3. Odboji od sten (levo/desno) in stropa
+        if (x + dx > WIDTH - r || x + dx < r) dx = -dx;
+        if (y + dy < r) dy = -dy;
 
-        //Če smo zadeli opeko, vrni povratno kroglo in označi v tabeli, da opeke ni več
-        if (y < NROWS * rowheight && row >= 0 && col >= 0 && bricks[row][col] == 1) {
-            dy = -dy; bricks[row][col] = 0;
+        var paddleTop = HEIGHT - paddleh - PADDLE_OFFSET_BOTTOM;
+        
+        // 4. LOGIKA ZA TLA IN PLOŠČICO
+        if (dy > 0 && y + r >= paddleTop && y + r <= paddleTop + dy + 2) {
+            if (x > paddlex && x < paddlex + paddlew) {
+                var hitPos = (x - (paddlex + paddlew / 2)) / (paddlew / 2);
+                dx = 6 * hitPos; 
+                dy = -dy;
+                y = paddleTop - r; // "Odlepi" žogico od ploščice
+            }
         }
-
-        if (x + dx > WIDTH - r || x + dx < 0 + r)
-            dx = -dx;
-        if (y + dy < 0 + r)
-            dy = -dy;
-        else if (y + dy > HEIGHT - r) {
-            //Odboj kroglice, ki je odvisen od odboja od ploščka 
+        /* if (y + dy > HEIGHT - r) {
+            // Če zadane ploščico, se odbije
             if (x > paddlex && x < paddlex + paddlew) {
                 dx = 8 * ((x - (paddlex + paddlew / 2)) / paddlew);
                 dy = -dy;
-            } else if (y + dy > HEIGHT - r) {
-                clearInterval(intervalId);
+            } else {
+                // Žogica je padla na tla: ustavi se na dnu
+                y = HEIGHT - r;
+                dx = 0;
+                dy = 0;
+
+                 // Zakomentirana stara koda za konec igre
+                clearInterval(intervalId); // Ustavimo risanje
+                clearInterval(intTimer);   // Ustavimo uro
+                alert("Konec igre! Vaš čas: " + $("#cas").text());
+                location.reload(); // Osvežimo stran za novo igro 
+            }
+        } */
+
+        if (y + r + dy > HEIGHT) {
+            y = HEIGHT - r;
+            dx = 0;
+            dy = 0;
+        }
+
+        // 5. PONOVNI ODZIV: Če je žogica na tleh in jo zadeneš s ploščico, se spet odbije
+        // To omogoča, da se žogica "aktivira", ko prineseš paddle do nje
+        if (dy === 0 && y >= HEIGHT - r) {
+            if (x > paddlex && x < paddlex + paddlew) {
+                dx = 2; 
+                dy = -4;
+                y = paddleTop - r;
             }
         }
 
