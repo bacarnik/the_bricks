@@ -1,14 +1,51 @@
 <!DOCTYPE html>
 <html>
-    <head>
+
+<head>
     <link rel="stylesheet" href="css/style.css">
     <script src="scripts/jquery.js"></script>
-    <script src="scripts/test.js"></script>
+    <script src="scripts/settings.js"></script>
+    <script src="scripts/logic.js"></script>
+    <script src="scripts/main.js"></script>
 </head>
+
 <body onload="drawIt()">
     <div id="container">
-        <p>Čas: <mark id="cas">00:00</mark></p>
-        <canvas id="canvas" width="300" height="300"></canvas>
+        <div id="ui-layer">
+            <div id="scoreboard">
+                <div class="stat">TIME: <span id="cas">00:00</span></div>
+                <div class="stat">SCORE: <span id="points">0</span></div>
+                <div class="stat">❤︎ <span id="lives">3</span></div>
+            </div>
+            <div id="controls">
+                <button class="btn-easy" onclick="setDifficulty('easy')">Easy</button>
+                <button class="btn-medium" onclick="setDifficulty('medium')">Medium</button>
+                <button class="btn-hard" onclick="setDifficulty('hard')">Hard</button>
+                <button class="btn-restart" onclick="location.reload()">Restart</button>
+            </div>
+        </div>
+        <div id="game-container" style="position: relative; width: 800px; height: 600px;">
+            <canvas id="canvas" width="800" height="600" style="border: 1px solid white;"></canvas>
+
+            <div id="gameOverScreen"
+                style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); color: white; flex-direction: column; justify-content: center; align-items: center; z-index: 10;">
+
+                <h1 style="font-size: 50px; color: #ff4444; margin-bottom: 10px;">GAME OVER!</h1>
+                <p style="font-size: 24px;">FINAL SCORE: <span id="finalScore"
+                        style="font-weight: bold; color: #0affeb;">0</span></p>
+                <p>BEST TIME: <span id="bestTimeDisplay" style="color: #0affeb;">00:00</span></p>
+
+                <button onclick="resetGame()"
+                    style="font-size: 20px; background: #0affeb; border: none; border-radius: 5px; cursor: pointer;font-weight: bold;">
+                    PLAY AGAIN
+                </button>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-icon">ⓘ</div>
+            <div class="info-text">Ime Priimek, 4. R</div>
+        </div>
     </div>
 </body>
+
 </html>
