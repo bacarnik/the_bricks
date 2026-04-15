@@ -6,35 +6,51 @@
 
 body {
     background-color: black;
+    margin: 0;
+    padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
-    /* Centriranje po vertikali */
-    min-height: 100vh;
-    overflow: hidden;
-    /* Prepreči drsnike */
+}
+
+canvas {
+    display: block;
+    max-width: 100%;
+    /* Da se ne raztegne čez rob, če je okno majhno */
+    height: auto;
 }
 
 #container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    max-width: 850px;
-    /* Malo širše od canvasa */
-    padding: 20px;
+    margin-top: 50px;
+    /* Minimalen odmik od vrha brskalnika */
+    width: 800px;
+}
+
+#gameOverScreen {
+    display: none; 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0, 0, 0, 0.9); 
+    color: white; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 999; 
+    border-radius: 0;
 }
 
 /* UI vrstica nad igro */
 #ui-layer {
+    width: 800px;
+    margin-bottom: 10px;
+    /* Zmanjšan razmik do canvasa */
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    width: 800px;
-    /* Enako kot canvas */
-    margin-bottom: 30px;
-    /* VEČJI RAZMIK DO CANVASA */
-    font-family: 'Courier New', Courier, monospace;
 }
 
 #scoreboard {

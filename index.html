@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <title>Neon Brick Breaker</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="scripts/jquery.js"></script>
     <script src="scripts/settings.js"></script>
@@ -24,26 +25,24 @@
                 <button class="btn-restart" onclick="location.reload()">Restart</button>
             </div>
         </div>
-        <div id="game-container" style="position: relative; width: 800px; height: 600px;">
-            <canvas id="canvas" width="800" height="600" style="border: 1px solid white;"></canvas>
+        <div id="game-container"
+            style="position: relative; margin: 0 auto; border: 2px solid #00d2ff; box-shadow: 0 0 20px rgba(0, 210, 255, 0.3);">
+            <canvas id="canvas" style="display: block;"></canvas>
 
             <div id="gameOverScreen"
-                style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); color: white; flex-direction: column; justify-content: center; align-items: center; z-index: 10;">
-
-                <h1 style="font-size: 50px; color: #ff4444; margin-bottom: 10px;">GAME OVER!</h1>
-                <p style="font-size: 24px;">FINAL SCORE: <span id="finalScore"
-                        style="font-weight: bold; color: #0affeb;">0</span></p>
-                <p>BEST TIME: <span id="bestTimeDisplay" style="color: #0affeb;">00:00</span></p>
-
+                style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; flex-direction: column; justify-content: center; align-items: center; color: white;">
+                <h1 style="color: #ff4444;">GAME OVER</h1>
+                <p style="font-size: 20px;">SCORE: <span id="finalScore">0/0</span></p>
+                <p style="font-size: 20px;">YOUR TIME: <span id="finalTime">00:00</span></p>
+                <p style="font-size: 18px; color: #0affeb;">BEST TIME (Win only): <span
+                        id="bestTimeDisplay">--:--</span></p>
                 <button onclick="resetGame()"
-                    style="font-size: 20px; background: #0affeb; border: none; border-radius: 5px; cursor: pointer;font-weight: bold;">
-                    PLAY AGAIN
-                </button>
+                    style="margin-top: 20px; padding: 10px 30px; background: #0affeb; font-weight: bold; border: none; cursor: pointer;">RESTART</button>
             </div>
         </div>
         <div class="info-container">
             <div class="info-icon">ⓘ</div>
-            <div class="info-text">Ime Priimek, 4. R</div>
+            <div class="info-text">Nik Bačar 4.RB</div>
         </div>
     </div>
 </body>

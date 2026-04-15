@@ -4,10 +4,10 @@ function draw() {
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
         ctx.fillStyle = "white";
         ctx.font = "30px Arial";
-        ctx.fillText("PAVZA", WIDTH/2 - 50, HEIGHT/2);
-        return; 
+        ctx.fillText("PAVZA", WIDTH / 2 - 50, HEIGHT / 2);
+        return;
     }
-    
+
     ctx.fillStyle = "#000000";
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
     var paddleTop = HEIGHT - paddleh - PADDLE_OFFSET_BOTTOM;
@@ -30,7 +30,6 @@ function draw() {
                 var by = (i * (BRICKHEIGHT + PADDING)) + BRICK_OFFSET_TOP;
                 ctx.fillStyle = (bricks[i][j] === 2) ? "#888888" : rowcolors[i % rowcolors.length];
                 ctx.fillRect(bx, by, BRICKWIDTH, BRICKHEIGHT);
-
                 if (brickPowers[i][j]) { // Indikator power-upa
                     ctx.fillStyle = "#000000";
                     ctx.beginPath();
@@ -81,8 +80,7 @@ function draw() {
                     var by = (i * (BRICKHEIGHT + PADDING)) + BRICK_OFFSET_TOP;
 
                     // Preverimo, če se žogica dotika opeke
-                    if (ball.x + r > bx && ball.x - r < bx + BRICKWIDTH &&
-                        ball.y + r > by && ball.y - r < by + BRICKHEIGHT) {
+                    if (ball.x + r > bx && ball.x - r < bx + BRICKWIDTH && ball.y + r > by && ball.y - r < by + BRICKHEIGHT) {
 
                         // Izračunamo prekrivanje (overlap), da vemo katero stran smo zadeli
                         var overlapX = Math.min(ball.x + r - bx, bx + BRICKWIDTH - (ball.x - r));
@@ -114,9 +112,23 @@ function draw() {
                                     r: 8
                                 });
                             }
+                            if (score >= totalBricks * 10) {
+                                showGameOver(true);
+                            }
                         }
                         // Če je bricks[i][j] === 2 (siva), se koda ustavi tu, 
                         // odboj pa je že narejen zgoraj.
+
+                        if (bricks[i][j] === 1) {
+                            bricks[i][j] = 0;
+                            score += 10;
+                            $("#points").text(score);
+
+                            // Preveri zmago
+                            if (score === totalBricks) {
+                                showGameOver(true);
+                            }
+                        }
 
                         hitAny = true;
                         break; // Izstop iz notranje zanke stolpcev
@@ -159,7 +171,7 @@ function draw() {
     for (var p = powers.length - 1; p >= 0; p--) {
         powers[p].y += 2;
         ctx.beginPath();
-        if (powers[p].type == "extraBall") ctx.fillStyle = "#00ffff";
+        if (powers[p].type == "extraBall") ctx.fillStyle = "#2bff00";
         else if (powers[p].type == "bigPaddle") ctx.fillStyle = "#ff00ff";
         else if (powers[p].type == "slowPaddle") ctx.fillStyle = "#ffa500";
         ctx.arc(powers[p].x, powers[p].y, powers[p].r, 0, Math.PI * 2);
@@ -216,6 +228,7 @@ function draw() {
         // 2. Nastavimo parametre glede na težavnost
         if (level === 'easy') {
             levelMap = easyMap;
+            console.log("opica")
         } else if (level === 'medium') {
             levelMap = mediumMap;
         } else if (level === 'hard') {

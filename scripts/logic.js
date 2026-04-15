@@ -15,37 +15,46 @@ function startTimer() {
     }, 1000);
 }
 
-function showGameOver() {
+function showGameOver(isWin = false) {
     gameStarted = false;
     if (intTimer) {
         clearInterval(intTimer);
         intTimer = null;
     }
 
-    // 1. Pridobi trenutni rekord iz shrambe (v sekundah)
+    // 1. Pripravi naslov
+    var title = isWin ? "LEVEL COMPLETE!" : "GAME OVER";
+    var titleColor = isWin ? "#0affeb" : "#ff4444";
+    $("#gameOverScreen h1").text(title).css("color", titleColor);
+
+    // 2. Izpis SCORE: trenutni/vsi
+    $("#finalScore").text(score + " / " + totalBricks * 10);
+
+    // 3. Logika za ČAS
+    var currentTimeStr = formatTime(sekunde);
+    $("#finalTime").text(currentTimeStr); // Dodaj <span id="finalTime"> v HTML
+
+    // Rekord shranimo in prikažemo SAMO ob zmagi
     var bestTime = localStorage.getItem("bestTime");
 
-    // 2. Preveri, če je trenutni čas boljši (manjši) od rekorda
-    // (bestTime == null pomeni, da igramo prvič)
-    if (bestTime === null || sekunde < parseInt(bestTime)) {
-        localStorage.setItem("bestTime", sekunde);
-        bestTime = sekunde;
+    if (isWin) {
+        if (bestTime === null || sekunde < parseInt(bestTime)) {
+            localStorage.setItem("bestTime", sekunde);
+            bestTime = sekunde;
+            $("#bestTimeDisplay").text(formatTime(bestTime) + " (NEW RECORD!)");
+        } else {
+            $("#bestTimeDisplay").text(formatTime(bestTime));
+        }
+    } else {
+        // Ob porazu samo pokaži star rekord, brez "New Record"
+        $("#bestTimeDisplay").text(bestTime ? formatTime(bestTime) : "--:--");
     }
 
-    // 3. Pretvori sekunde v format MM:SS za izpis
-    function formatTime(s) {
-        var m = Math.floor(s / 60);
-        var sec = s % 60;
-        return (m < 10 ? "0" + m : m) + ":" + (sec < 10 ? "0" + sec : sec);
-    }
-
-    // 4. Izpis v HTML
-    $("#finalTime").text(formatTime(sekunde)); // Trenutni čas
-    $("#bestTimeDisplay").text(formatTime(bestTime) + "  !!!NEW  RECORD!!!"); // Rekordni čas
-    $("#gameOverScreen").css("display", "flex").fadeIn(500);
+    $("#gameOverScreen").css("display", "flex");
 }
 
 function resetGame() {
+    console.log("zbrisano");
     // 1. Skrij okno (uporabimo več načinov za vsak primer)
     $("#gameOverScreen").hide(); // JQuery način
     $("#gameOverScreen").css("display", "none"); // Prisilen CSS način
@@ -99,6 +108,61 @@ function togglePause() {
     }
 }
 
+function initbricks() {
+    NROWS = levelMap.length;    // Število vrstic iz tabele
+    NCOLS = levelMap[0].length; // Število stolpcev
+
+    totalBricks = 0;
+    for (var i = 0; i < NROWS; i++) {
+        for (var j = 0; j < NCOLS; j++) {
+            if (levelMap[i][j] === 1) { // Štejemo le uničljive opeke
+                totalBricks++;
+            }
+        }
+    }
+
+    bricks = new Array(NROWS);
+    brickPowers = new Array(NROWS);
+
+    for (var i = 0; i < NROWS; i++) {
+        bricks[i] = new Array(NCOLS);
+        brickPowers[i] = new Array(NCOLS);
+        for (var j = 0; j < NCOLS; j++) {
+
+            // Nastavimo tip opeke direktno iz levelMap
+            var brickType = levelMap[i][j];
+            bricks[i][j] = brickType;
+
+            // Power-upe določimo samo tam, kjer je opeka (tip 1)
+            if (brickType === 1) {
+                // KLJUČNO: Tukaj definiraj 'rand' za VSAKO opeko posebej!
+                var rand = Math.random();
+
+                if (rand < 0.15) { // 15 % možnosti za power-up
+                    var typeRand = Math.random();
+
+                    if (typeRand < 0.4) {
+                        brickPowers[i][j] = "extraBall";
+                    } else if (typeRand < 0.8) {
+                        brickPowers[i][j] = "bigPaddle";
+                    } else {
+                        brickPowers[i][j] = "slowPaddle";
+                    }
+                } else {
+                    brickPowers[i][j] = null;
+                }
+            } else {
+                // Če je prazno (0) ali sivo (2), ni power-upa
+                brickPowers[i][j] = null;
+            }
+        }
+    }
+}
+
+
+function init_paddle() { paddlex = WIDTH / 2; }
+
+
 function drawIt() {
 
     function init() {
@@ -111,21 +175,37 @@ function drawIt() {
     }
 
     function respondCanvas() {
-        var container = $('#container');
         var canvas = $('#canvas');
-        WIDTH = container.width();
-        HEIGHT = container.height();
+        var container = $('#game-container');
+
+        // Širina naj bo 95% okna, vendar ne več kot 800px
+        var targetWidth = Math.min($(window).width() * 0.95, 800);
+
+        // Višina naj bo 70% okna, da zagotovo vidimo ploščico na dnu
+        var targetHeight = $(window).height() * 0.7;
+
+        WIDTH = targetWidth;
+        HEIGHT = targetHeight;
+
+        // Nastavimo atribute canvasu
         canvas.attr('width', WIDTH);
         canvas.attr('height', HEIGHT);
 
-        // NCOLS vzamemo iz naše mape
-        NCOLS = levelMap[0].length;
-        BRICKWIDTH = ((WIDTH - (2 * BRICK_OFFSET_SIDES)) / NCOLS) - PADDING;
+        // Nastavimo širino game-containerja, da se ujema s canvasom
+        container.css('width', WIDTH + 'px');
+        container.css('height', HEIGHT + 'px');
 
+        // Ponovni izračun opek (ker se je širina spremenila)
+        if (typeof levelMap !== 'undefined' && levelMap.length > 0) {
+            NCOLS = levelMap[0].length;
+            BRICKWIDTH = ((WIDTH - (2 * BRICK_OFFSET_SIDES)) / NCOLS) - PADDING;
+        }
+
+        // Popravek ploščice, da ne ostane zunaj nove širine
         if (paddlex + paddlew > WIDTH) paddlex = WIDTH - paddlew;
     }
 
-    function init_paddle() { paddlex = WIDTH / 2; }
+
 
     // --- Tipkovnica ---
     function onKeyDown(evt) {
@@ -153,43 +233,5 @@ function drawIt() {
     $(document).off("keydown").on("keydown", onKeyDown);
     $(document).off("keyup").on("keyup", onKeyUp);
 
-    // --- Inicializacija opek ---
-    function initbricks() {
-        NROWS = levelMap.length;    // Število vrstic iz tabele
-        NCOLS = levelMap[0].length; // Število stolpcev
-
-        bricks = new Array(NROWS);
-        brickPowers = new Array(NROWS);
-
-        for (var i = 0; i < NROWS; i++) {
-            bricks[i] = new Array(NCOLS);
-            brickPowers[i] = new Array(NCOLS);
-            for (var j = 0; j < NCOLS; j++) {
-
-                // Nastavimo tip opeke direktno iz levelMap
-                var brickType = levelMap[i][j];
-                bricks[i][j] = brickType;
-
-                // Power-upe določimo samo tam, kjer je opeka (tip 1)
-                if (brickType === 1) {
-                    var rand = Math.random();
-                    if (rand < 0.04) brickPowers[i][j] = "extraBall";
-                    else if (rand < 0.08) brickPowers[i][j] = "bigPaddle";
-                    else if (rand < 0.016) brickPowers[i][j] = "slowPaddle";
-                    else brickPowers[i][j] = null;
-                } else {
-                    brickPowers[i][j] = null;
-                }
-            }
-        }
-    }
-
-    function timer() {
-        if (!gameStarted) return;
-        sekunde++;
-        var s = (sekunde % 60).toString().padStart(2, '0');
-        var m = Math.floor(sekunde / 60).toString().padStart(2, '0');
-        $("#cas").html(m + ":" + s);
-    }
     init();
 }
