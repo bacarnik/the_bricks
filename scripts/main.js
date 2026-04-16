@@ -30,12 +30,7 @@ function draw() {
                 var by = (i * (BRICKHEIGHT + PADDING)) + BRICK_OFFSET_TOP;
                 ctx.fillStyle = (bricks[i][j] === 2) ? "#888888" : rowcolors[i % rowcolors.length];
                 ctx.fillRect(bx, by, BRICKWIDTH, BRICKHEIGHT);
-                if (brickPowers[i][j]) { // Indikator power-upa
-                    ctx.fillStyle = "#000000";
-                    ctx.beginPath();
-                    ctx.arc(bx + BRICKWIDTH / 2, by + BRICKHEIGHT / 2, 2, 0, Math.PI * 2);
-                    ctx.fill();
-                }
+                
             }
         }
     }
