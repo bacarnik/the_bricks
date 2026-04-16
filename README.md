@@ -29,7 +29,7 @@ BRICK-BREAKER/
 │   └── main.js            # Main game loop, physics, and collision detection
 ├── index.html             # Main entry point and game container
 └── README.md              # Project documentation
-```text
+```
 
 ## 🚀 Key Features
 
