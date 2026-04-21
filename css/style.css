@@ -14,34 +14,47 @@ body {
 
 canvas {
     display: block;
-    max-width: 100%;
-    /* Da se ne raztegne čez rob, če je okno majhno */
+    /* max-width: 100%; */
     height: auto;
+    border: 2px solid #0affeb;
+    box-shadow: 0 0 20px #0affeb, inset 0 0 10px #0affeb;
+    background-color: #000;
 }
 
 #container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 50px;
-    /* Minimalen odmik od vrha brskalnika */
-    width: 800px;
+    width: auto;
 }
 
 #gameOverScreen {
-    display: none; 
-    position: absolute; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: rgba(0, 0, 0, 0.9); 
-    color: white; 
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center; 
-    z-index: 999; 
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
     border-radius: 0;
+}
+
+#game-title {
+    width: 100%;
+    text-align: center;
+    color: #0affeb;
+    font-family: 'Courier New', Courier, monospace;
+    text-transform: uppercase;
+    font-size: 80px;
+    letter-spacing: 10px;
+    text-shadow: 0 0 20px #0affeb;
+    margin-top: 20px;
+    margin-bottom: 40px;
 }
 
 /* UI vrstica nad igro */

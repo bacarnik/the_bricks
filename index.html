@@ -13,6 +13,9 @@
 
 <body onload="drawIt()">
     <div id="container">
+        <h1 id="game-title">
+            NAME BREAKER
+        </h1>
         <div id="ui-layer">
             <div id="scoreboard">
                 <div class="stat">TIME: <span id="cas">00:00</span></div>
@@ -20,9 +23,9 @@
                 <div class="stat">❤︎ <span id="lives">3</span></div>
             </div>
             <div id="controls">
-                <button class="btn-easy" onclick="setDifficulty('easy')">Easy</button>
-                <button class="btn-medium" onclick="setDifficulty('medium')">Medium</button>
-                <button class="btn-hard" onclick="setDifficulty('hard')">Hard</button>
+                <button class="btn-bor" onclick="setDifficulty('BOR')">BOR</button>
+                <button class="btn-tim" onclick="setDifficulty('TIM')">TIM</button>
+                <button class="btn-vid" onclick="setDifficulty('VID')">VID</button>
                 <button class="btn-restart" onclick="location.reload()">Restart</button>
             </div>
         </div>
