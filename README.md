@@ -1,8 +1,4 @@
-<center>
-
-# Brick Breaker 🧱⚡
-
-</center>
+<h1 align="center">Name breaker 🧱⚡</h1>
 
 A retro-modern arcade experience built with HTML5 Canvas and JavaScript. Navigate the paddle, bounce the ball, and shatter vibrant neon bricks while collecting power-ups to achieve the highest score.
 
@@ -45,6 +41,7 @@ BRICK-BREAKER/
     * ⚠️ **Slow Paddle:** A challenging debuff that reduces the paddle's responsiveness.
 * **Smart Scoring:** Calculates final results based on the ratio between the current score and the maximum possible points on the map.
 
+
 ## 🛠️ Technologies Used
 
 * **HTML5 Canvas:** Utilized for high-performance 2D graphics rendering.
@@ -52,12 +49,14 @@ BRICK-BREAKER/
 * **JavaScript (ES6):** Custom physics engine for ball bounces and power-up gravity.
 * **LocalStorage API:** Persists and tracks your "Best Time" records across different sessions.
 
+
 ## 🎮 How to Play
 
-* **Start:** Click a difficulty button or press `Restart` to refresh the game state.
-* **Move:** Control the paddle using your mouse or the arrow keys on your keyboard.
-* **Objective:** Shatter all turquoise bricks. Gray bricks are indestructible obstacles!
-* **Win:** Destroy all breakable bricks to complete the level and set a new record time.
+1.  **Start:** Click a difficulty button or press Restart to refresh the game state.
+2.  **Move:** Control the paddle using your mouse or the arrow keys on your keyboard.
+3.  **Objective:** Shatter all turquoise bricks. Gray bricks are indestructible obstacles!
+4.  **Win:** Destroy all breakable bricks to complete the level and set a new record time.
+
 
 ## 📜 License
 
