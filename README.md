@@ -1,4 +1,8 @@
+<center>
+
 # Brick Breaker 🧱⚡
+
+</center>
 
 A retro-modern arcade experience built with HTML5 Canvas and JavaScript. Navigate the paddle, bounce the ball, and shatter vibrant neon bricks while collecting power-ups to achieve the highest score.
 
