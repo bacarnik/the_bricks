@@ -14,7 +14,6 @@ body {
 
 canvas {
     display: block;
-    /* max-width: 100%; */
     height: auto;
     border: 2px solid #0affeb;
     box-shadow: 0 0 20px #0affeb, inset 0 0 10px #0affeb;
@@ -25,7 +24,8 @@ canvas {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: auto;
+    width: 100%;
+    padding: 10px 0;  /* Add vertical breathing room */
 }
 
 #gameOverScreen {
@@ -47,30 +47,35 @@ canvas {
 #game-title {
     width: 100%;
     text-align: center;
-    color: #0affeb;
-    font-family: 'Courier New', Courier, monospace;
-    text-transform: uppercase;
-    font-size: 80px;
-    letter-spacing: 10px;
-    text-shadow: 0 0 20px #0affeb;
     margin-top: 20px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
+    font-size: clamp(40px, 8vw, 80px);
+    order: 1;
+    color: #0affeb;
+    text-shadow: 0 0 10px #0affeb;  
+}
+
+#game-container {
+    position: relative;
+    margin: 0 auto;
+    order: 3;  
 }
 
 /* UI vrstica nad igro */
 #ui-layer {
-    width: 800px;
-    margin-bottom: 10px;
-    /* Zmanjšan razmik do canvasa */
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 30px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    order: 2;
 }
 
 #scoreboard {
     display: flex;
     gap: 40px;
-    /* Razmik med Time, Score in Lives */
-    color: #00d2ff;
+    color: #0affeb;
     font-weight: bold;
     font-size: 1.2em;
     text-shadow: 0 0 8px rgba(0, 210, 255, 0.6);
@@ -78,13 +83,16 @@ canvas {
 
 #controls {
     display: flex;
+    color: #0affeb;
+    text-shadow: 0 0 8px rgba(0, 210, 255, 0.6);
+    font-weight: bold;
     gap: 10px;
 }
 
 #controls button {
     background: transparent;
-    border: 1px solid #00d2ff;
-    color: #00d2ff;
+    border: 1px solid #0affeb;
+    color: #0affeb;
     padding: 8px 15px;
     cursor: pointer;
     transition: 0.3s;
@@ -94,9 +102,9 @@ canvas {
 }
 
 #controls button:hover {
-    background: #00d2ff;
+    background: #0affeb;
     color: #000;
-    box-shadow: 0 0 15px #00d2ff;
+    box-shadow: 0 0 15px #0affeb;
 }
 
 /* Stil za Info ikono */

@@ -25,12 +25,28 @@ function draw() {
     // 2. Izris opek
     for (var i = 0; i < NROWS; i++) {
         for (var j = 0; j < NCOLS; j++) {
-            if (bricks[i][j] > 0) {
+            var hp = bricks[i][j];
+
+            if (hp > 0) {
                 var bx = (j * (BRICKWIDTH + PADDING)) + BRICK_OFFSET_SIDES;
                 var by = (i * (BRICKHEIGHT + PADDING)) + BRICK_OFFSET_TOP;
-                ctx.fillStyle = (bricks[i][j] === 2) ? "#888888" : rowcolors[i % rowcolors.length];
+
+                // BARVNA LOGIKA - Če tukaj ne vidiš spremembe, preveri hp s console.log(hp)
+                if (hp === 3) {
+                    ctx.fillStyle = "#00396e"; // Zelo temna
+                } else if (hp === 2) {
+                    ctx.fillStyle = "#0060c0"; // Srednje temna
+                } else {
+                    // HP 1 uporabi tvojo originalno barvo vrstice
+                    ctx.fillStyle = rowcolors[i % rowcolors.length];
+                }
+
                 ctx.fillRect(bx, by, BRICKWIDTH, BRICKHEIGHT);
-                
+
+                // Bela obroba, da se opeke ločijo
+                ctx.strokeStyle = "rgba(255,255,255,0.2)";
+                ctx.lineWidth = 1;
+                ctx.strokeRect(bx, by, BRICKWIDTH, BRICKHEIGHT);
             }
         }
     }
@@ -38,6 +54,8 @@ function draw() {
     // 3. Logika žogic
     for (var b = balls.length - 1; b >= 0; b--) {
         var ball = balls[b];
+
+        // IZRIS ŽOGICE
         ctx.beginPath();
         ctx.fillStyle = ballcolor;
         ctx.arc(ball.x, ball.y, r, 0, Math.PI * 2);
@@ -74,28 +92,24 @@ function draw() {
                     var bx = (j * (BRICKWIDTH + PADDING)) + BRICK_OFFSET_SIDES;
                     var by = (i * (BRICKHEIGHT + PADDING)) + BRICK_OFFSET_TOP;
 
-                    // Preverimo, če se žogica dotika opeke
-                    if (ball.x + r > bx && ball.x - r < bx + BRICKWIDTH && ball.y + r > by && ball.y - r < by + BRICKHEIGHT) {
+                    if (ball.x + r > bx && ball.x - r < bx + BRICKWIDTH &&
+                        ball.y + r > by && ball.y - r < by + BRICKHEIGHT) {
 
-                        // Izračunamo prekrivanje (overlap), da vemo katero stran smo zadeli
                         var overlapX = Math.min(ball.x + r - bx, bx + BRICKWIDTH - (ball.x - r));
                         var overlapY = Math.min(ball.y + r - by, by + BRICKHEIGHT - (ball.y - r));
 
                         if (overlapX < overlapY) {
-                            // Stranski trk
                             ball.dx = -ball.dx;
-                            // Preprečimo lepljenje: premaknemo žogico izven opeke
                             ball.x += (ball.dx > 0) ? (overlapX + 0.1) : -(overlapX + 0.1);
                         } else {
-                            // Navpični trk
                             ball.dy = -ball.dy;
-                            // Preprečimo lepljenje
                             ball.y += (ball.dy > 0) ? (overlapY + 0.1) : -(overlapY + 0.1);
                         }
 
-                        // LOGIKA ZA UNIČEVANJE
-                        if (bricks[i][j] === 1) { // Samo navadne opeke se uničijo
-                            bricks[i][j] = 0;
+                        // Odštejemo zdravje
+                        bricks[i][j] -= 1;
+
+                        if (bricks[i][j] === 0) {
                             score += 10;
                             $("#points").html(score);
 
@@ -107,30 +121,18 @@ function draw() {
                                     r: 8
                                 });
                             }
+
                             if (score >= totalBricks * 10) {
-                                showGameOver(true);
-                            }
-                        }
-                        // Če je bricks[i][j] === 2 (siva), se koda ustavi tu, 
-                        // odboj pa je že narejen zgoraj.
-
-                        if (bricks[i][j] === 1) {
-                            bricks[i][j] = 0;
-                            score += 10;
-                            $("#points").text(score);
-
-                            // Preveri zmago
-                            if (score === totalBricks) {
                                 showGameOver(true);
                             }
                         }
 
                         hitAny = true;
-                        break; // Izstop iz notranje zanke stolpcev
+                        break;
                     }
                 }
             }
-            if (hitAny) break; // Izstop iz zunanje zanke vrstic
+            if (hitAny) break;
         }
 
         // Preverjanje padca žogice pod spodnji rob
@@ -209,6 +211,7 @@ function draw() {
 
     // Tezavnost
     window.setDifficulty = function (level) {
+        console.log('Rightmost bx+width:', NCOLS - 1 * (BRICKWIDTH + PADDING) + BRICK_OFFSET_SIDES + BRICKWIDTH);
         // 1. Ustavimo trenutni timer in igro
         gameStarted = false;
         if (intTimer) {
@@ -221,13 +224,12 @@ function draw() {
         $("#points").html("0");
 
         // 2. Nastavimo parametre glede na težavnost
-        if (level === 'easy') {
-            levelMap = easyMap;
-            console.log("opica")
-        } else if (level === 'medium') {
-            levelMap = mediumMap;
-        } else if (level === 'hard') {
-            levelMap = hardMap;
+        if (level === 'BOR') {
+            levelMap = borMap;
+        } else if (level === 'TIM') {
+            levelMap = timMap;
+        } else if (level === 'VID') {
+            levelMap = vidMap;
         }
 
         // 3. RE-INITIALIZACIJA (Nova tabela opek in reset power-upov)
@@ -235,6 +237,7 @@ function draw() {
         paddlew = basePaddleWidth; // Resetiramo širino ploščice
         paddleWidthLevel = 0;
 
+        respondCanvas();
         initbricks(); // Ponovno zgenerira bricks[][] iz levelMap
         init_paddle(); // Postavi ploščico na sredino
     };
