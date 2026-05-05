@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="sl">
 <head>
+    <meta charset="UTF-8">
     <title>Name Breaker</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="img/favicon.webp">
@@ -10,12 +10,10 @@
     <script src="scripts/logic.js"></script>
     <script src="scripts/main.js"></script>
 </head>
-
 <body onload="drawIt()">
     <div id="container">
-        <h1 id="game-title">
-            NAME BREAKER
-        </h1>
+        <h1 id="game-title">NAME BREAKER</h1>
+        
         <div id="ui-layer">
             <div id="scoreboard">
                 <div class="stat">TIME: <span id="cas">00:00</span></div>
@@ -29,26 +27,23 @@
                 <button class="btn-restart" onclick="location.reload()">Restart</button>
             </div>
         </div>
-        <div id="game-container"
-            >
-            <canvas id="canvas" style="display: block;"></canvas>
 
-            <div id="gameOverScreen"
-                style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; flex-direction: column; justify-content: center; align-items: center; color: white;">
-                <h1 style="color: #ff4444;">GAME OVER</h1>
-                <p style="font-size: 20px;">SCORE: <span id="finalScore">0/0</span></p>
-                <p style="font-size: 20px;">YOUR TIME: <span id="finalTime">00:00</span></p>
-                <p style="font-size: 18px; color: #0affeb;">BEST TIME (Win only): <span
-                        id="bestTimeDisplay">--:--</span></p>
-                <button onclick="resetGame()"
-                    style="margin-top: 20px; padding: 10px 30px; background: #0affeb; font-weight: bold; border: none; cursor: pointer;">RESTART</button>
+        <div id="game-container">
+            <canvas id="canvas"></canvas>
+
+            <div id="gameOverScreen">
+                <h1 id="gameOverTitle">GAME OVER</h1>
+                <p>SCORE: <span id="finalScore">0/0</span></p>
+                <p>YOUR TIME: <span id="finalTime">00:00</span></p>
+                <p id="bestTimeWrapper">BEST TIME: <span id="bestTimeDisplay">--:--</span></p>
+                <button class="btn-main" onclick="resetGame()">RESTART</button>
             </div>
         </div>
+
         <div class="info-container">
             <div class="info-icon">ⓘ</div>
             <div class="info-text">Nik Bačar 4.RB</div>
         </div>
     </div>
 </body>
-
 </html>

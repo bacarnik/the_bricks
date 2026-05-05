@@ -6,28 +6,91 @@
 
 body {
     background-color: black;
-    margin: 0;
-    padding: 0;
+    font-family: sans-serif;
     display: flex;
     justify-content: center;
+    overflow-x: hidden;
 }
 
-canvas {
-    display: block;
-    height: auto;
-    border: 2px solid #0affeb;
-    box-shadow: 0 0 20px #0affeb, inset 0 0 10px #0affeb;
-    background-color: #000;
-}
-
+/* Glavni kontejner */
 #container {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
-    padding: 10px 0;  /* Add vertical breathing room */
+    padding: 20px;
 }
 
+#game-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: clamp(40px, 8vw, 80px);
+    color: #0affeb;
+    text-shadow: 0 0 10px #0affeb;
+    order: 1;
+}
+
+/* UI Elementi (Scoreboard in Kontrole) */
+#ui-layer {
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    order: 2;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+#scoreboard {
+    display: flex;
+    gap: 30px;
+    color: #0affeb;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+#controls {
+    display: flex;
+    gap: 10px;
+}
+
+/* Stil za vse gumbe */
+#controls button, #gameOverScreen button {
+    background: transparent;
+    border: 1px solid #0affeb;
+    color: #0affeb;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+#controls button:hover, #gameOverScreen button:hover {
+    background: #0affeb;
+    color: black;
+    box-shadow: 0 0 15px #0affeb;
+}
+
+/* Igra in Canvas */
+#game-container {
+    position: relative;
+    order: 3;
+}
+
+canvas {
+    border: 2px solid #0affeb;
+    box-shadow: 0 0 20px #0affeb, inset 0 0 10px #0affeb;
+    background-color: black;
+    max-width: 100%;
+    display: block;
+}
+
+/* Game Over Zaslon */
 #gameOverScreen {
     display: none;
     position: absolute;
@@ -40,74 +103,21 @@ canvas {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 999;
-    border-radius: 0;
+    z-index: 100;
 }
 
-#game-title {
-    width: 100%;
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    font-size: clamp(40px, 8vw, 80px);
-    order: 1;
-    color: #0affeb;
-    text-shadow: 0 0 10px #0affeb;  
+#gameOverScreen h1 {
+    font-size: 3em;
+    margin-bottom: 15px;
+    color: #ff4444; /* Standardno za Game Over */
 }
 
-#game-container {
-    position: relative;
-    margin: 0 auto;
-    order: 3;  
-}
-
-/* UI vrstica nad igro */
-#ui-layer {
-    width: 100%;
-    max-width: 1200px;
-    margin-bottom: 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    order: 2;
-}
-
-#scoreboard {
-    display: flex;
-    gap: 40px;
-    color: #0affeb;
-    font-weight: bold;
+#gameOverScreen p {
+    margin: 5px 0;
     font-size: 1.2em;
-    text-shadow: 0 0 8px rgba(0, 210, 255, 0.6);
 }
 
-#controls {
-    display: flex;
-    color: #0affeb;
-    text-shadow: 0 0 8px rgba(0, 210, 255, 0.6);
-    font-weight: bold;
-    gap: 10px;
-}
-
-#controls button {
-    background: transparent;
-    border: 1px solid #0affeb;
-    color: #0affeb;
-    padding: 8px 15px;
-    cursor: pointer;
-    transition: 0.3s;
-    border-radius: 4px;
-    text-transform: uppercase;
-    font-size: 0.8em;
-}
-
-#controls button:hover {
-    background: #0affeb;
-    color: #000;
-    box-shadow: 0 0 15px #0affeb;
-}
-
-/* Stil za Info ikono */
+/* Info ikona in tekst */
 .info-container {
     position: fixed;
     bottom: 20px;
@@ -115,6 +125,7 @@ canvas {
     display: flex;
     align-items: center;
     flex-direction: row-reverse;
+    z-index: 200;
 }
 
 .info-icon {
@@ -127,18 +138,19 @@ canvas {
     align-items: center;
     font-weight: bold;
     cursor: pointer;
+    box-shadow: 0 0 10px #0affeb;
 }
 
 .info-text {
     margin-right: 15px;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 8px 15px;
     border-radius: 5px;
     opacity: 0;
     transition: 0.3s;
     pointer-events: none;
-    font-family: sans-serif;
+    border: 1px solid #0affeb;
 }
 
 .info-container:hover .info-text {
