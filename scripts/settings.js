@@ -13,18 +13,14 @@ var WIDTH, HEIGHT, ctx;
 var r = 8; // polmer žogice
 var ballcolor = "#ffffff";
 var balls = [{ x: 150, y: 150, dx: 2, dy: -4 }];
-var globalBalls = balls; 
 
 // --- PARAMETRI PLOŠČICE (PADDLE) ---
 var paddlex;
 var paddleh = 10;
-var paddlew = 75; // Trenutna širina
-var basePaddleWidth = 75; // Osnovna širina za reset
+var paddlew = 75; 
 var paddlecolor = "#ffffff";
 var paddleSpeed = 5;
 var PADDLE_OFFSET_BOTTOM = 20;
-var paddleWidthLevel = 0; // Za nadgradnjo širine
-var paddleTimers = [];    // Za shranjevanje timeoutov power-upov
 
 // --- KONTROLE ---
 var rightDown = false;
@@ -32,8 +28,6 @@ var leftDown = false;
 
 // --- NASTAVITVE OPEK (BRICKS) ---
 var bricks;
-var brickPowers = [];
-var powers = []; // Aktivni power-upi, ki padajo
 var NROWS, NCOLS;
 var BRICKWIDTH;
 var BRICKHEIGHT = 15;

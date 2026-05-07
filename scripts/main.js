@@ -5,7 +5,7 @@ function draw() {
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
         ctx.fillStyle = "white";
         ctx.font = "30px Arial";
-        ctx.fillText("PAVZA", WIDTH/2 - 50, HEIGHT/2);
+        ctx.fillText("PAUSE", WIDTH / 2 - 50, HEIGHT / 2);
         return;
     }
 
@@ -80,16 +80,15 @@ function draw() {
                     var bx = (j * (BRICKWIDTH + PADDING)) + BRICK_OFFSET_SIDES;
                     var by = (i * (BRICKHEIGHT + PADDING)) + BRICK_OFFSET_TOP;
 
-                    if (ball.x + r > bx && ball.x - r < bx + BRICKWIDTH && 
+                    if (ball.x + r > bx && ball.x - r < bx + BRICKWIDTH &&
                         ball.y + r > by && ball.y - r < by + BRICKHEIGHT) {
-                        
+
                         // Izračun prekrivanja za določitev strani odboja
                         var overlapX = Math.min(ball.x + r - bx, bx + BRICKWIDTH - (ball.x - r));
                         var overlapY = Math.min(ball.y + r - by, by + BRICKHEIGHT - (ball.y - r));
 
                         if (overlapX < overlapY) {
                             ball.dx = -ball.dx;
-                            // Premaknemo žogico izven opeke, da ne zleti skozi
                             ball.x += (ball.dx > 0) ? (overlapX + 0.1) : -(overlapX + 0.1);
                         } else {
                             ball.dy = -ball.dy;
@@ -100,11 +99,8 @@ function draw() {
                         if (bricks[i][j] === 0) {
                             score += 10;
                             $("#points").html(score);
-                            if (brickPowers[i][j]) {
-                                powers.push({ x: bx + BRICKWIDTH/2, y: by + BRICKHEIGHT/2, type: brickPowers[i][j], r: 8 });
-                            }
                         }
-                        
+
                         // Zmaga
                         if (score >= totalBricks * 10) showGameOver(true);
 
@@ -123,36 +119,12 @@ function draw() {
                 $("#lives").html(lives);
                 gameStarted = false;
                 if (lives <= 0) showGameOver();
-                else balls.push({ x: paddlex + paddlew/2, y: paddleTop - r, dx: 2, dy: -4 });
+                else balls.push({ x: paddlex + paddlew / 2, y: paddleTop - r, dx: 2, dy: -4 });
             }
-        }
-    }
-
-    // 5. POWER-UPI
-    for (var p = powers.length - 1; p >= 0; p--) {
-        powers[p].y += 2;
-        ctx.beginPath();
-        ctx.fillStyle = (powers[p].type == "extraBall") ? "#2bff00" : (powers[p].type == "bigPaddle") ? "#ff00ff" : "#ffa500";
-        ctx.arc(powers[p].x, powers[p].y, powers[p].r, 0, Math.PI * 2);
-        ctx.fill();
-
-        if (powers[p].y + powers[p].r >= paddleTop && powers[p].x > paddlex && powers[p].x < paddlex + paddlew) {
-            if (powers[p].type == "extraBall") balls.push({ x: paddlex + paddlew/2, y: paddleTop - 20, dx: 3, dy: -4 });
-            else if (powers[p].type == "bigPaddle") {
-                paddlew = Math.min(paddlew + 40, 250);
-                setTimeout(() => { paddlew = basePaddleWidth; }, 10000);
-            } else if (powers[p].type == "slowPaddle") {
-                paddleSpeed = 2;
-                setTimeout(() => { paddleSpeed = 5; }, 5000);
-            }
-            powers.splice(p, 1);
-        } else if (powers[p].y > HEIGHT) {
-            powers.splice(p, 1);
         }
     }
 
     window.setDifficulty = function (level) {
-        console.log('Rightmost bx+width:', NCOLS - 1 * (BRICKWIDTH + PADDING) + BRICK_OFFSET_SIDES + BRICKWIDTH);
         // 1. Ustavimo trenutni timer in igro
         gameStarted = false;
         if (intTimer) {
@@ -173,8 +145,7 @@ function draw() {
             levelMap = vidMap;
         }
 
-        // 3. RE-INITIALIZACIJA (Nova tabela opek in reset power-upov)
-        powers = []; // Pobrišemo padajoče power-upe
+        // 3. RE-INITIALIZACIJA (Nova tabela opek)
         paddlew = basePaddleWidth; // Resetiramo širino ploščice
         paddleWidthLevel = 0;
 

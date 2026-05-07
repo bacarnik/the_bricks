@@ -64,10 +64,6 @@ function resetGame() {
     $("#points").text(score);
     $("#cas").text("00:00");
 
-    // 4. Počisti tabele in pripravi prvo žogico
-    powers = [];
-    paddlew = basePaddleWidth;
-    paddleWidthLevel = 0;
 
     // Postavi žogico na sredino ploščice
     balls = [{
@@ -77,7 +73,7 @@ function resetGame() {
         dy: -4
     }];
 
-    // 5. Ponovno naloži opeke in ploščico
+    // 4. Ponovno naloži opeke in ploščico
     initbricks();
     init_paddle();
 }
@@ -98,12 +94,10 @@ function initbricks() {
     NROWS = levelMap.length;
     NCOLS = levelMap[0].length;
     bricks = [];
-    brickPowers = [];
     totalBricks = 0;
 
     for (var i = 0; i < NROWS; i++) {
         bricks[i] = [];
-        brickPowers[i] = [];
 
         for (var j = 0; j < NCOLS; j++) {
             var isBrickHere = levelMap[i][j];
@@ -116,20 +110,8 @@ function initbricks() {
                 if (strengthRand < 0.10) bricks[i][j] = 3; // 10% možnosti za HP 3
                 else if (strengthRand < 0.30) bricks[i][j] = 2; // 20% možnosti za HP 2
                 else bricks[i][j] = 1; // 70% možnosti za HP 1
-
-                // Power-upi
-                var rand = Math.random();
-                if (rand < 0.15) {
-                    var typeRand = Math.random();
-                    if (typeRand < 0.4) brickPowers[i][j] = "extraBall";
-                    else if (typeRand < 0.8) brickPowers[i][j] = "bigPaddle";
-                    else brickPowers[i][j] = "slowPaddle";
-                } else {
-                    brickPowers[i][j] = null;
-                }
             } else {
                 bricks[i][j] = 0;
-                brickPowers[i][j] = null;
             }
         }
     }
